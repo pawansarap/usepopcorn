@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 
 const tempMovieData = [
   {
@@ -50,39 +50,9 @@ const tempWatchedData = [
 const average = (arr) =>
   arr.reduce((acc, cur, i, arr) => acc + cur / arr.length, 0);
 
-const KEY = "f84fc31d";
-
 export default function App() {
-  const [movies, setMovies] = useState([]);
-  const [watched, setWatched] = useState([]);
-  const [isLoding, setIstLoading] = useState(false);
-  const [error, setError] = useState("");
-  const query = "test";
-
-  useEffect(function () {
-    async function fetchMovies() {
-      try {
-        setIstLoading(true);
-        const res = await fetch(
-          `http://www.omdbapi.com/?apikey=${KEY}&s=${query}`
-        );
-        if (!res.ok)
-          throw new Error("Something went wrong with fetching movies");
-
-        const data = await res.json();
-        if (data.Response === "False") throw new Error("Movie not Found!");
-        setMovies(data.Search);
-        // console.log(data.Search);
-      } catch (err) {
-        // console.log(err.message);
-        setError(err.message);
-      } finally {
-        setIstLoading(false);
-      }
-    }
-    fetchMovies();
-  }, []);
-
+  const [movies, setMovies] = useState(tempMovieData);
+  const [watched, setWatched] = useState(tempWatchedData);
   return (
     <>
       <NavBar>
@@ -100,10 +70,7 @@ export default function App() {
           }
         /> */}
         <Box>
-          {/* {isLoding ? <Loader /> : <MovieList movies={movies} />} */}
-          {isLoding && <Loader />}
-          {!isLoding && !error && <MovieList movies={movies} />}
-          {error && <ErrorMessage message={error} />}
+          <MovieList movies={movies} />
         </Box>
         <Box>
           <WatchedSummary watched={watched} />
@@ -170,18 +137,6 @@ function Box({ children }) {
   );
 }
 
-function Loader() {
-  return <p className="loader">Lodding...</p>;
-}
-
-function ErrorMessage({ message }) {
-  return (
-    <p className="error">
-      <span>🚨</span>
-      {message}
-    </p>
-  );
-}
 function MovieList({ movies }) {
   return (
     <ul className="list">
