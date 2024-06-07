@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import StarRating from "./StarRating";
 
 const tempMovieData = [
   {
@@ -50,7 +51,7 @@ const tempWatchedData = [
 const average = (arr) =>
   arr.reduce((acc, cur, i, arr) => acc + cur / arr.length, 0);
 
-const KEY = "f84fc31d";
+const KEY = "943c377c";
 
 export default function App() {
   const [query, setQuery] = useState("ABCD");
@@ -82,7 +83,7 @@ export default function App() {
 */
 
   function handleSelectMovie(id) {
-    setSelectedId((selectedId)=> id === selectedId ? null : id);
+    setSelectedId((selectedId) => (id === selectedId ? null : id));
   }
 
   function handleCloseMoive() {
@@ -307,9 +308,74 @@ function WatchedSummary({ watched }) {
 }
 
 function MoiveDetails({ selectedId, onCloseMovie }) {
-  return <div className="detail">
-    <button className="btn-back" onClick={onCloseMovie}>&larr;</button>
-    {selectedId}</div>;
+  const [movie, setMovie] = useState({});
+  const [isLoding, setIstLoading] = useState(false);
+  const {
+    Title: title,
+    Year: year,
+    Poster: poster,
+    Runtime: runtime,
+    imdbRating,
+    Plot: plot,
+    Released: released,
+    Actors: actors,
+    Director: director,
+    Genre: genre,
+  } = movie;
+
+  useEffect(
+    function () {
+      setIstLoading(true);
+      async function getMovieDetails() {
+        const res = await fetch(
+          `http://www.omdbapi.com/?apikey=${KEY}&i=${selectedId}`
+        );
+        const data = await res.json();
+        setMovie(data);
+        setIstLoading(false);
+      }
+      getMovieDetails();
+    },
+    [selectedId]
+  );
+
+  return (
+    <div className="details">
+      {isLoding ? (
+        <Loader />
+      ) : (
+        <>
+          <header>
+            <button className="btn-back" onClick={onCloseMovie}>
+              &larr;
+            </button>
+            <img src={poster} alt={`Poster of ${movie} movie`} />
+            <div className="details-overview">
+              <h2>{title} </h2>
+              <p>
+                {released} &bull; {runtime}
+              </p>
+              <p>{genre}</p>
+              <p>
+                <span>⭐</span>
+                {imdbRating} IMDb rating
+              </p>
+            </div>
+          </header>
+          <section>
+            <div className="rating">
+              <StarRating maxRating={10} size={24} />
+            </div>
+            <p>
+              <em>{plot}</em>
+            </p>
+            <p>Starring {actors}</p>
+            <p>Directed by {director}</p>
+          </section>
+        </>
+      )}
+    </div>
+  );
 }
 
 function WatchedMoviesList({ watched }) {

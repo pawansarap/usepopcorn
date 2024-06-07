@@ -138,7 +138,7 @@ body {
 .list {
   list-style: none;
   padding: 0.8rem 0;
-  /* overflow: scroll; */
+  overflow: auto;
 }
 
 .list-watched {
@@ -306,6 +306,7 @@ body {
 .btn-add:hover {
   background-color: var(--color-primary-light);
 }
+
 .seconds {
   background-color: var(--color-background-100);
   width: 8rem;
@@ -338,3 +339,10 @@ body {
   justify-content: center;
 }
 
+/*
+SPACING SYSTEM (px)
+2 / 4 / 8 / 12 / 16 / 24 / 32 / 40 / 48 / 64 / 80 / 96 / 128
+
+FONT SIZE SYSTEM (px)
+10 / 12 / 14 / 16 / 18 / 20 / 24 / 30 / 36 / 44 /52 / 62 / 74 / 86 / 98
+*/
