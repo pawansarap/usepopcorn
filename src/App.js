@@ -89,6 +89,9 @@ export default function App() {
   function handleCloseMoive() {
     setSelectedId(null);
   }
+  function handleAddWatched(movie) {
+    setWatched((watched) => [...watched, movie]);
+  }
 
   useEffect(
     function () {
@@ -152,6 +155,7 @@ export default function App() {
             <MoiveDetails
               selectedId={selectedId}
               onCloseMovie={handleCloseMoive}
+              onAddWatched={handleAddWatched}
             />
           ) : (
             <>
@@ -307,9 +311,10 @@ function WatchedSummary({ watched }) {
   );
 }
 
-function MoiveDetails({ selectedId, onCloseMovie }) {
+function MoiveDetails({ selectedId, onCloseMovie, onAddWatched }) {
   const [movie, setMovie] = useState({});
   const [isLoding, setIstLoading] = useState(false);
+  const [userRating, SetUserRating] = useState("");
   const {
     Title: title,
     Year: year,
@@ -323,6 +328,19 @@ function MoiveDetails({ selectedId, onCloseMovie }) {
     Genre: genre,
   } = movie;
 
+  function handleAdd() {
+    const newWatchedMovie = {
+      imdbID: selectedId,
+      title,
+      year,
+      poster,
+      imdbRating: Number(imdbRating),
+      runtime: Number(runtime.split(" ").at(0)),
+    };
+
+    onAddWatched(newWatchedMovie);
+    onCloseMovie();
+  }
   useEffect(
     function () {
       setIstLoading(true);
@@ -364,7 +382,14 @@ function MoiveDetails({ selectedId, onCloseMovie }) {
           </header>
           <section>
             <div className="rating">
-              <StarRating maxRating={10} size={24} />
+              <StarRating
+                maxRating={10}
+                size={24}
+                onSetRating={SetUserRating}
+              />
+              <button className="btn-add" onClick={handleAdd}>
+                + Add to List
+              </button>
             </div>
             <p>
               <em>{plot}</em>
@@ -391,8 +416,8 @@ function WatchedMoviesList({ watched }) {
 function WatchedMovie({ movie }) {
   return (
     <li>
-      <img src={movie.Poster} alt={`${movie.Title} poster`} />
-      <h3>{movie.Title}</h3>
+      <img src={movie.poster} alt={`${movie.title} poster`} />
+      <h3>{movie.title}</h3>
       <div>
         <p>
           <span>⭐️</span>
