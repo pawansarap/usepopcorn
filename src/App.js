@@ -88,12 +88,13 @@ export default function App() {
 
   function handleCloseMoive() {
     setSelectedId(null);
+    document.title="usePopcorn";
   }
   function handleAddWatched(movie) {
     setWatched((watched) => [...watched, movie]);
   }
   function handleRemoveWatched(id) {
-    setWatched((watched)=> watched.filter((movie)=> movie.imdbID !== id))
+    setWatched((watched) => watched.filter((movie) => movie.imdbID !== id));
   }
 
   useEffect(
@@ -164,7 +165,10 @@ export default function App() {
           ) : (
             <>
               <WatchedSummary watched={watched} />
-              <WatchedMoviesList watched={watched} onRemoveWatched={handleRemoveWatched}/>
+              <WatchedMoviesList
+                watched={watched}
+                onRemoveWatched={handleRemoveWatched}
+              />
             </>
           )}
         </Box>
@@ -366,6 +370,11 @@ function MoiveDetails({ selectedId, onCloseMovie, onAddWatched, watched }) {
     [selectedId]
   );
 
+  useEffect(function () {
+    if(!title) return;
+    document.title = `Movie | ${title}`;
+  }, [title]);
+
   return (
     <div className="details">
       {isLoding ? (
@@ -405,7 +414,9 @@ function MoiveDetails({ selectedId, onCloseMovie, onAddWatched, watched }) {
                   )}
                 </>
               ) : (
-                <p>You Rated this moive {watchedUserRating} <span>⭐</span></p>
+                <p>
+                  You Rated this moive {watchedUserRating} <span>⭐</span>
+                </p>
               )}
             </div>
             <p>
@@ -420,17 +431,21 @@ function MoiveDetails({ selectedId, onCloseMovie, onAddWatched, watched }) {
   );
 }
 
-function WatchedMoviesList({ watched,onRemoveWatched }) {
+function WatchedMoviesList({ watched, onRemoveWatched }) {
   return (
     <ul className="list">
       {watched.map((movie) => (
-        <WatchedMovie movie={movie} key={movie.imdbID} onRemoveWatched={onRemoveWatched}/>
+        <WatchedMovie
+          movie={movie}
+          key={movie.imdbID}
+          onRemoveWatched={onRemoveWatched}
+        />
       ))}
     </ul>
   );
 }
 
-function WatchedMovie({ movie,onRemoveWatched }) {
+function WatchedMovie({ movie, onRemoveWatched }) {
   return (
     <li>
       <img src={movie.poster} alt={`${movie.title} poster`} />
@@ -448,7 +463,12 @@ function WatchedMovie({ movie,onRemoveWatched }) {
           <span>⏳</span>
           <span>{movie.runtime} min</span>
         </p>
-        <button className="btn-delete"onClick={()=>onRemoveWatched(movie.imdbID)}>X</button>
+        <button
+          className="btn-delete"
+          onClick={() => onRemoveWatched(movie.imdbID)}
+        >
+          X
+        </button>
       </div>
     </li>
   );
