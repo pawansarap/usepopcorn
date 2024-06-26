@@ -137,6 +137,7 @@ export default function App() {
     [query]
   );
 
+ 
   return (
     <>
       <NavBar>
@@ -361,6 +362,21 @@ function MoiveDetails({ selectedId, onCloseMovie, onAddWatched, watched }) {
     onAddWatched(newWatchedMovie);
     onCloseMovie();
   }
+
+  useEffect(function () {
+    function callback (e) {
+      if (e.key === "Escape") {
+        onCloseMovie();
+        console.log("close")
+      }
+  }
+    document.addEventListener("keydown", callback );
+
+    return function(){
+      document.removeEventListener("keydown", callback)
+    }
+  }, [onCloseMovie]); 
+  
   useEffect(
     function () {
       setIstLoading(true);
@@ -387,6 +403,9 @@ function MoiveDetails({ selectedId, onCloseMovie, onAddWatched, watched }) {
     },
     [title]
   );
+
+ 
+
 
   return (
     <div className="details">
